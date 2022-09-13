@@ -6,12 +6,17 @@ import dotenv from 'dotenv';
 const app = express();
 
 app.use(bodyParser.json());
-dotenv.config()
+dotenv.config();
+app.use(express.json());
 mongoose.connect(`${process.env.DB_URL}`).then(()=> {
     console.log('Connected to database');
 })
 .catch(e =>{
     console.log('Database is not connected');
+})
+
+app.get("/",(req, res)=> {
+    res.send("hello")
 })
 
 app.listen(`${process.env.PORT}`,()=> {
