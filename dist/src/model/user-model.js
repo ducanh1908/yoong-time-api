@@ -64,4 +64,5 @@ const UserSchema = new mongoose_1.default.Schema({
         default: false
     }
 }, { timestamps: true });
-module.exports = mongoose_1.default.model("User", UserSchema);
+const User = mongoose_1.default.model("User", UserSchema);
+exports.default = User;

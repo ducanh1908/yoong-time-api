@@ -1,3 +1,4 @@
+import { route } from './src/Routes/route';
 import express from 'express'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
@@ -15,9 +16,7 @@ mongoose.connect(`${process.env.DB_URL}`).then(()=> {
     console.log('Database is not connected');
 })
 
-app.get("/",(req, res)=> {
-    res.send("hello")
-})
+app.use('', route)
 
 app.listen(`${process.env.PORT}`,()=> {
     console.log(`Server is running port : ${process.env.PORT}`);
