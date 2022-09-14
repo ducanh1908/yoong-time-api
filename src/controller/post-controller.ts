@@ -62,18 +62,20 @@ class PostController {
     
   }
   timeline = async (req:Request, res:Response)=> {
-let postArray = [];
+
 try {
     const  currentUser = await User.findById(req.body.userId)
+  
     if(currentUser !== null) {
-        const userPost = await Post.find({userId: currentUser._id});
-        const friendPosts = await Promise.all (
+        const userPost= await Post.find({userId: currentUser._id});
+       let friendPosts = await Promise.all (
         currentUser.followings.map((friendId)=> {
-            Post.find({userId : friendId})
+           return Post.find({userId : friendId})
         })
-       
-    )
-    res.json(userPost.concact(...friendPosts))
+        
+        )   
+        res.json(userPost.concat(...friendPosts))
+
     }
 } catch (error) {
     res.status(500).json(error);

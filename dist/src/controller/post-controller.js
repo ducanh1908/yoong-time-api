@@ -75,15 +75,14 @@ class PostController {
             }
         });
         this.timeline = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            let postArray = [];
             try {
                 const currentUser = yield user_model_1.default.findById(req.body.userId);
                 if (currentUser !== null) {
                     const userPost = yield post_model_1.default.find({ userId: currentUser._id });
-                    const friendPosts = yield Promise.all(currentUser.followings.map((friendId) => {
-                        post_model_1.default.find({ userId: friendId });
+                    let friendPosts = yield Promise.all(currentUser.followings.map((friendId) => {
+                        return post_model_1.default.find({ userId: friendId });
                     }));
-                    res.json(userPost.concact(...friendPosts));
+                    res.json(userPost.concat(...friendPosts));
                 }
             }
             catch (error) {
