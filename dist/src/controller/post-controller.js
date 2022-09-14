@@ -25,6 +25,19 @@ class PostController {
                 res.status(400).json('create post error');
             }
         });
+        this.updatePost = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const idPost = req.params.id;
+            console.log(idPost);
+            const post = yield post_model_1.default.findById(idPost);
+            console.log(post);
+            if ((post === null || post === void 0 ? void 0 : post.userId) === req.body.userId) {
+                yield (post === null || post === void 0 ? void 0 : post.updateOne({ $set: req.body }));
+                res.status(200).json('the post has been update');
+            }
+            else {
+                res.status(403).json('you can update only your post');
+            }
+        });
     }
 }
 exports.default = new PostController();
