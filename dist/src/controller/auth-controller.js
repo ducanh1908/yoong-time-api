@@ -16,6 +16,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const crypto_1 = __importDefault(require("crypto"));
 const user_model_1 = __importDefault(require("../model/user-model"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class AuthController {
     constructor() {
         this.register = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -51,6 +52,35 @@ class AuthController {
                 }
             });
             res.status(200).json(user);
+        });
+        this.login = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            let loginFrom = req.body;
+            let user = yield user_model_1.default.findOne({
+                email: loginFrom.email
+            });
+            if (!user) {
+                res.status(401).json({ message: 'User is not exits.' });
+            }
+            else {
+                if (user.password) {
+                    let comparePassword = yield bcrypt_1.default.compare(loginFrom.password, user.password);
+                    if (!comparePassword) {
+                        res.status(401).json({ message: 'Incorrect password.' });
+                    }
+                    else {
+                        if (user.isVerified == false) {
+                            let payload = {
+                                email: user.email,
+                            };
+                            let token = yield jsonwebtoken_1.default.sign(payload, `${process.env.SECRET_KEY}`, { expiresIn: 360000 });
+                            res.status(200).json({ token });
+                        }
+                        else {
+                            res.status(401).json({ message: 'Email is not verified.' });
+                        }
+                    }
+                }
+            }
         });
     }
 }

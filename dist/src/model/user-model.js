@@ -59,7 +59,7 @@ const UserSchema = new mongoose_1.default.Schema({
         type: Number,
         enum: [1, 2, 3],
     },
-    isValidate: {
+    isVerified: {
         type: Boolean,
         default: false
     }

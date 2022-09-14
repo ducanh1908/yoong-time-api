@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto'
 import User from '../model/user-model';
+import jwt from 'jsonwebtoken'
 class AuthController {
     register = async(req: Request, res: Response) => {
         let user = req.body
@@ -42,5 +43,37 @@ class AuthController {
            })
          res.status(200).json(user)
     }
-}
+    login = async (req:Request, res:Response) => {
+      let loginFrom = req.body
+      let user = await User.findOne({
+          email: loginFrom.email
+      })
+      if(!user) {
+          res.status(401).json({ message: 'User is not exits.'});
+      }
+      else {
+          if(user.password){
+              let comparePassword = await bcrypt.compare(loginFrom.password,user.password)
+              if(!comparePassword){
+                  res.status(401).json({ message: 'Incorrect password.' })
+              }
+              else {
+                if(user.isVerified == false) {
+                  let payload= {
+                    email: user.email,
+                }
+                let token = await jwt.sign(payload,`${process.env.SECRET_KEY}`, {expiresIn : 360000} )
+                res.status(200).json({ token })
+                }
+                else {
+                  res.status(401).json({ message: 'Email is not verified.' })
+                }
+                  
+              }
+          }
+      }
+
+  }
+    }
+
 export default new AuthController();
