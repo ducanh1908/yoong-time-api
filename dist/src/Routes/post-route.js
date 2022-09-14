@@ -12,4 +12,4 @@ exports.postRoute.put('/:id', post_controller_1.default.updatePost);
 exports.postRoute.delete('/:id', post_controller_1.default.deletePost);
 exports.postRoute.put('/:id/like', post_controller_1.default.like);
 exports.postRoute.post('/:id', post_controller_1.default.getPost);
-exports.postRoute.post('/timeline', post_controller_1.default.timeline);
+exports.postRoute.get('/timeline/all', post_controller_1.default.timeline);

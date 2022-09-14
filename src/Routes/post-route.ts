@@ -8,7 +8,7 @@ postRoute.put('/:id',postController.updatePost)
 postRoute.delete('/:id',postController.deletePost)
 postRoute.put('/:id/like', postController.like);
 postRoute.post('/:id',postController.getPost)
-postRoute.post('/timeline',postController.timeline)
+postRoute.get('/timeline/all',postController.timeline)
 
 
 
