@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import Post from "../model/post-model";
+import User from "../model/user-model";
 
 class PostController {
   createPost = async (req: Request, res: Response) => {
@@ -49,5 +50,34 @@ class PostController {
       res.status(500).json(err);
     }
   };
+  getPost = async (req:Request, res:Response)=> {
+    let idPost = req.params.id
+    try {
+    const post = await Post.findById(idPost);
+    res.status(200).json(post)
+        
+    } catch (error) {
+        res.status(500).json(error)
+    }
+    
+  }
+  timeline = async (req:Request, res:Response)=> {
+let postArray = [];
+try {
+    const  currentUser = await User.findById(req.body.userId)
+    if(currentUser !== null) {
+        const userPost = await Post.find({userId: currentUser._id});
+        const friendPosts = await Promise.all (
+        currentUser.followings.map((friendId)=> {
+            Post.find({userId : friendId})
+        })
+       
+    )
+    res.json(userPost.concact(...friendPosts))
+    }
+} catch (error) {
+    res.status(500).json(error);
+}
+  }
 }
 export default new PostController();

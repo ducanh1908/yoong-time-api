@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const post_model_1 = __importDefault(require("../model/post-model"));
+const user_model_1 = __importDefault(require("../model/user-model"));
 class PostController {
     constructor() {
         this.createPost = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -61,6 +62,32 @@ class PostController {
             }
             catch (err) {
                 res.status(500).json(err);
+            }
+        });
+        this.getPost = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            let idPost = req.params.id;
+            try {
+                const post = yield post_model_1.default.findById(idPost);
+                res.status(200).json(post);
+            }
+            catch (error) {
+                res.status(500).json(error);
+            }
+        });
+        this.timeline = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            let postArray = [];
+            try {
+                const currentUser = yield user_model_1.default.findById(req.body.userId);
+                if (currentUser !== null) {
+                    const userPost = yield post_model_1.default.find({ userId: currentUser._id });
+                    const friendPosts = yield Promise.all(currentUser.followings.map((friendId) => {
+                        post_model_1.default.find({ userId: friendId });
+                    }));
+                    res.json(userPost.concact(...friendPosts));
+                }
+            }
+            catch (error) {
+                res.status(500).json(error);
             }
         });
     }
