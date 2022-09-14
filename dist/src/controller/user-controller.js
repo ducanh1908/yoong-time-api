@@ -117,6 +117,31 @@ class Usercontroller {
                 res.status(403).json("you can follow youself");
             }
         });
+        this.unfollow = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            let id = req.params.id;
+            if (req.body.userId !== id) {
+                try {
+                    const user = yield user_model_1.default.findById(id);
+                    const currentUser = yield user_model_1.default.findById(req.body.userId);
+                    if (user !== null && currentUser !== null) {
+                        if (user.followers.includes(req.body.userId)) {
+                            yield user.updateOne({ $pull: { followers: req.body.userId } });
+                            yield currentUser.updateOne({ $pull: { followings: id } });
+                            res.status(200).json("user has been unfollowed");
+                        }
+                        else {
+                            res.status(403).json("you allready follow this user");
+                        }
+                    }
+                }
+                catch (error) {
+                    res.status(500).json(error);
+                }
+            }
+            else {
+                res.status(403).json("you can unfollow youself");
+            }
+        });
     }
 }
 exports.default = new Usercontroller();
