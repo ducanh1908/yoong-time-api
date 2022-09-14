@@ -6,4 +6,5 @@ export const postRoute = Router();
 postRoute.post('',postController.createPost)
 postRoute.put('/:id',postController.updatePost)
 postRoute.delete('/:id',postController.deletePost)
+postRoute.put('/:id/like', postController.like)
 
